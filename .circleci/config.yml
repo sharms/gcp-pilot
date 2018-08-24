@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  plan-terraform:
     docker:
       - image: hashicorp/terraform:0.11.8
     steps:
@@ -11,6 +11,14 @@ jobs:
       - run:
           name: Initialize Terraform
           command: cd terraform && terraform init
+  apply-terraform:
+    docker:
+      - image: hashicorp/terraform:0.11.8
+    steps:
+      - checkout
+      - run:
+          name: Store Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
       - run:
           name: Apply Terraform
           command: cd terraform && terraform plan
@@ -24,4 +32,13 @@ jobs:
       - run: |
           sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
           sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+
+workflows:
+  version: 2
+  terraform:
+    jobs:
+      - plan-terraform
+      - apply-terraform:
+          requires:
+            - hold
 
