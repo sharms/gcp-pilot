@@ -12,7 +12,6 @@ jobs:
           name: Initialize Terraform
           command: cd terraform && terraform init && terraform plan -input=false
   apply_terraform:
-    requires: hold
     docker:
       - image: hashicorp/terraform:0.11.8
     steps:
@@ -37,18 +36,18 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             cd wordpress
-            sed -i "s/WORDPRESS_DB_NAME/${WORDPRESS_DB_NAME}/gc" wp-config.php
-            sed -i "s/WORDPRESS_DB_HOST/${WORDPRESS_DB_HOST}/gc" wp-config.php
-            sed -i "s/WORDPRESS_DB_USER/${WORDPRESS_DB_USER}/gc" wp-config.php
-            sed -i "s/WORDPRESS_DB_PASSWORD/${WORDPRESS_DB_PASSWORD}/gc" wp-config.php
-            sed -i "s/WORDPRESS_AUTH_KEY/${WORDPRESS_AUTH_KEY}/gc" wp-config.php
-            sed -i "s/WORDPRESS_SECURE_AUTH_KEY/${WORDPRESS_SECURE_AUTH_KEY}/gc" wp-config.php
-            sed -i "s/WORDPRESS_LOGGED_IN_KEY/${WORDPRESS_LOGGED_IN_KEY}/gc" wp-config.php
-            sed -i "s/WORDPRESS_NONCE_KEY/${WORDPRESS_NONCE_KEY}/gc" wp-config.php
-            sed -i "s/WORDPRESS_AUTH_SALT/${WORDPRESS_AUTH_SALT}/gc" wp-config.php
-            sed -i "s/WORDPRESS_SECURE_AUTH_SALT/${WORDPRESS_SECURE_AUTH_SALT}/gc" wp-config.php
-            sed -i "s/WORDPRESS_LOGGED_IN_SALT/${WORDPRESS_LOGGED_IN_SALT}/gc" wp-config.php
-            sed -i "s/WORDPRESS_NONCE_SALT/${WORDPRESS_NONCE_SALT}/gc" wp-config.php
+            sed -i "s/WORDPRESS_DB_NAME/${WORDPRESS_DB_NAME}/g" wp-config.php
+            sed -i "s/WORDPRESS_DB_HOST/${WORDPRESS_DB_HOST}/g" wp-config.php
+            sed -i "s/WORDPRESS_DB_USER/${WORDPRESS_DB_USER}/g" wp-config.php
+            sed -i "s/WORDPRESS_DB_PASSWORD/${WORDPRESS_DB_PASSWORD}/g" wp-config.php
+            sed -i "s/WORDPRESS_AUTH_KEY/${WORDPRESS_AUTH_KEY}/g" wp-config.php
+            sed -i "s/WORDPRESS_SECURE_AUTH_KEY/${WORDPRESS_SECURE_AUTH_KEY}/g" wp-config.php
+            sed -i "s/WORDPRESS_LOGGED_IN_KEY/${WORDPRESS_LOGGED_IN_KEY}/g" wp-config.php
+            sed -i "s/WORDPRESS_NONCE_KEY/${WORDPRESS_NONCE_KEY}/g" wp-config.php
+            sed -i "s/WORDPRESS_AUTH_SALT/${WORDPRESS_AUTH_SALT}/g" wp-config.php
+            sed -i "s/WORDPRESS_SECURE_AUTH_SALT/${WORDPRESS_SECURE_AUTH_SALT}/g" wp-config.php
+            sed -i "s/WORDPRESS_LOGGED_IN_SALT/${WORDPRESS_LOGGED_IN_SALT}/g" wp-config.php
+            sed -i "s/WORDPRESS_NONCE_SALT/${WORDPRESS_NONCE_SALT}/g" wp-config.php
             gcloud app deploy
   
 workflows:
