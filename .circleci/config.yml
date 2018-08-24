@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Apply Terraform
           command: cd terraform && terraform init && terraform apply -input=false -auto-approve
-  deploy:
+  deploy_wordpress_flexible:
     docker:
       - image: google/cloud-sdk
     steps:
@@ -33,6 +33,20 @@ jobs:
       - run: |
           sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
           sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          cd wordpress
+          sed -i "s/WORDPRESS_DB_NAME/${WORDPRESS_DB_NAME}/gc" wp-config.php
+          sed -i "s/WORDPRESS_DB_HOST/${WORDPRESS_DB_HOST}/gc" wp-config.php
+          sed -i "s/WORDPRESS_DB_USER/${WORDPRESS_DB_USER}/gc" wp-config.php
+          sed -i "s/WORDPRESS_DB_PASSWORD/${WORDPRESS_DB_PASSWORD}/gc" wp-config.php
+          sed -i "s/WORDPRESS_AUTH_KEY/${WORDPRESS_AUTH_KEY}/gc" wp-config.php
+          sed -i "s/WORDPRESS_SECURE_AUTH_KEY/${WORDPRESS_SECURE_AUTH_KEY}/gc" wp-config.php
+          sed -i "s/WORDPRESS_LOGGED_IN_KEY/${WORDPRESS_LOGGED_IN_KEY}/gc" wp-config.php
+          sed -i "s/WORDPRESS_NONCE_KEY/${WORDPRESS_NONCE_KEY}/gc" wp-config.php
+          sed -i "s/WORDPRESS_AUTH_SALT/${WORDPRESS_AUTH_SALT}/gc" wp-config.php
+          sed -i "s/WORDPRESS_SECURE_AUTH_SALT/${WORDPRESS_SECURE_AUTH_SALT}/gc" wp-config.php
+          sed -i "s/WORDPRESS_LOGGED_IN_SALT/${WORDPRESS_LOGGED_IN_SALT}/gc" wp-config.php
+          sed -i "s/WORDPRESS_NONCE_SALT/${WORDPRESS_NONCE_SALT}/gc" wp-config.php
+          sudo gcloud app deploy
 
 workflows:
   version: 2
@@ -46,4 +60,5 @@ workflows:
       - apply_terraform:
           requires:
             - hold
+      - deploy_wordpress_flexible
 
