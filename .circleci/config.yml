@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: hashicorp/terraform:0.11.8
     steps:
+      - checkout
       - run:
           name: Initialize Terraform
           command: cd terraform && terraform init
