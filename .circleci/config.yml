@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  plan-terraform:
+  plan_terraform:
     docker:
       - image: hashicorp/terraform:0.11.8
     steps:
@@ -11,7 +11,8 @@ jobs:
       - run:
           name: Initialize Terraform
           command: cd terraform && terraform init
-  apply-terraform:
+  apply_terraform:
+    requires: hold
     docker:
       - image: hashicorp/terraform:0.11.8
     steps:
@@ -37,8 +38,12 @@ workflows:
   version: 2
   terraform:
     jobs:
-      - plan-terraform
-      - apply-terraform:
+      - plan_terraform
+      - hold:
+          type: approval
+          requires:
+            - plan_terraform
+      - apply_terraform:
           requires:
             - hold
 
