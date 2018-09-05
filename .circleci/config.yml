@@ -46,7 +46,7 @@ jobs:
             rm gcloud-sdk.tar.gz
             export PATH=~/google-cloud-sdk/bin:$PATH
             gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-            gcloud config set project $GCLOUD_PROJECT_ID
+            gcloud config set project $GOOGLE_PROJECT_ID
             echo 'export PATH=~/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
             source $BASH_ENV
       - run:
