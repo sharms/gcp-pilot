@@ -24,7 +24,7 @@ jobs:
           command: cd terraform && terraform init && terraform apply -input=false -auto-approve
   deploy_java_spring_flexible:
     docker:
-      - image: google/cloud-sdk
+      - image: mrsvan/google-cloud-sdk-app-engine-java
       #      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
