@@ -22,6 +22,23 @@ jobs:
       - run:
           name: Apply Terraform
           command: cd terraform && terraform init && terraform apply -input=false -auto-approve
+  deploy_java_spring_flexible:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: cd java-spring-flexible && mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run: cd java-spring-flexible && mvn appengine:deploy
   deploy_wordpress_flexible:
     docker:
       - image: google/cloud-sdk
@@ -62,5 +79,6 @@ workflows:
       - apply_terraform:
           requires:
             - hold
+      - deploy_java_spring_flexible
       - deploy_wordpress_flexible
 
