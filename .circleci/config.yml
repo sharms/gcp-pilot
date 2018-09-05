@@ -30,7 +30,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
+          - v1-dependencies-{{ checksum "java-spring-flexible/pom.xml" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       - run:
@@ -48,7 +48,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+          key: v1-dependencies-{{ checksum "java-spring-flexible/pom.xml" }}
      - run: cd java-spring-flexible && mvn appengine:deploy
   deploy_wordpress_flexible:
     docker:
