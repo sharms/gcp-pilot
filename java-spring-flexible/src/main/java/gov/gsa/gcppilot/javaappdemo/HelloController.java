@@ -8,4 +8,10 @@ public class HelloController {
     public String index() {
         return "Hello from spring boot";
     }
+
+    @RequestMapping("/_ah/health")
+    public String healthy() {
+        // Message body required though ignored
+        return "Still surviving.";
+    }
 }

@@ -96,13 +96,26 @@ workflows:
   terraform:
     jobs:
       - plan_terraform
-      - hold:
+      - hold_terraform:
           type: approval
           requires:
             - plan_terraform
       - apply_terraform:
           requires:
-            - hold
+            - hold_terraform
+      - hold_java_spring_flexible:
+          type: approval
+          requires:
+            - plan_terraform
       - deploy_java_spring_flexible
+          requires:
+            - hold_java_spring_flexible
+      - hold_wordpress_flexible:
+          type: approval
+          requires:
+            - plan_terraform
       - deploy_wordpress_flexible
+          requires:
+            - hold_wordpress_flexible
+
 
