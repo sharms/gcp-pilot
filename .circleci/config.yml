@@ -40,16 +40,16 @@ jobs:
           name: Setup app.yaml
           command: |
             cd java-spring-flexible
-            sed -i "s/__MYSQL_USER_NAME__/${MYSQL_USER_NAME}/g" wp-config.php
-            sed -i "s/__MYSQL_USER_PASSWORD__/${MYSQL_USER_PASSWORD}/g" wp-config.php
-            sed -i "s/__DATABASE_NAME__/${DATABASE_NAME}/g" wp-config.php
-            sed -i "s/__INSTANCE_CONNECTION_NAME__/${INSTANCE_CONNECTION_NAME}/g" wp-config.php
+            sed -i "s/__MYSQL_USER_NAME__/${MYSQL_USER_NAME}/g" src/main/appengine/app.yaml
+            sed -i "s/__MYSQL_USER_PASSWORD__/${MYSQL_USER_PASSWORD}/g" src/main/appengine/app.yaml
+            sed -i "s/__DATABASE_NAME__/${DATABASE_NAME}/g" src/main/appengine/app.yaml
+            sed -i "s/__INSTANCE_CONNECTION_NAME__/${INSTANCE_CONNECTION_NAME}/g" src/main/appengine/app.yaml
       - run: cd java-spring-flexible && mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "java-spring-flexible/pom.xml" }}
-     - run: cd java-spring-flexible && mvn appengine:deploy
+      - run: cd java-spring-flexible && mvn appengine:deploy
   deploy_wordpress_flexible:
     docker:
       - image: google/cloud-sdk
