@@ -1,0 +1,3 @@
+[submodule "getting-started-java"]
+	path = getting-started-java
+	url = git@github.com:GoogleCloudPlatform/getting-started-java.git

@@ -27,12 +27,16 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --remote
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "java-spring-flexible/pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "getting-started-java/helloworld-springboot/pom.xml" }}
+            - v1-dependencies-
       - run:
           name: Store Service Account
           command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
@@ -49,20 +53,20 @@ jobs:
             gcloud config set project $GOOGLE_PROJECT_ID
             echo 'export PATH=~/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
             source $BASH_ENV
-      - run:
-          name: Setup app.yaml
-          command: |
-            cd java-spring-flexible
-            sed -i "s/__MYSQL_USER_NAME__/${MYSQL_USER_NAME}/g" src/main/appengine/app.yaml
-            sed -i "s/__MYSQL_USER_PASSWORD__/${MYSQL_USER_PASSWORD}/g" src/main/appengine/app.yaml
-            sed -i "s/__DATABASE_NAME__/${DATABASE_NAME}/g" src/main/appengine/app.yaml
-            sed -i "s/__INSTANCE_CONNECTION_NAME__/${INSTANCE_CONNECTION_NAME}/g" src/main/appengine/app.yaml
-      - run: cd java-spring-flexible && mvn dependency:go-offline
+      #- run:
+      #-   name: Setup app.yaml
+      #-   command: |
+      #-     cd java-spring-flexible
+      #-     sed -i "s/__MYSQL_USER_NAME__/${MYSQL_USER_NAME}/g" src/main/appengine/app.yaml
+      #-     sed -i "s/__MYSQL_USER_PASSWORD__/${MYSQL_USER_PASSWORD}/g" src/main/appengine/app.yaml
+      #-     sed -i "s/__DATABASE_NAME__/${DATABASE_NAME}/g" src/main/appengine/app.yaml
+      #-     sed -i "s/__INSTANCE_CONNECTION_NAME__/${INSTANCE_CONNECTION_NAME}/g" src/main/appengine/app.yaml
+      - run: cd getting-started-java/helloworld-springboot && mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "java-spring-flexible/pom.xml" }}
-      - run: cd java-spring-flexible && mvn appengine:deploy
+          key: v1-dependencies-{{ checksum "getting-started-java/helloworld-springboot/pom.xml" }}
+      - run: cd getting-started-java/helloworld-springboot && mvn appengine:deploy
   deploy_wordpress_flexible:
     docker:
       - image: google/cloud-sdk
