@@ -156,7 +156,7 @@ workflows:
             - plan_terraform
       - deploy_java_spring_standard:
           requires:
-            - hold_java_spring_flexible
+            - hold_java_spring_standard
       - hold_wordpress_flexible:
           type: approval
           requires:
