@@ -57,13 +57,7 @@
 	</dependencies>
 
 	<build>
-    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 		<plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin>
 <plugin>
   <groupId>com.google.cloud.tools</groupId>
   <artifactId>appengine-maven-plugin</artifactId>
