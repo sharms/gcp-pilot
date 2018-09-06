@@ -44,7 +44,6 @@ jobs:
           name: Setup Google Cloud SDK
           command: |
             export GCLOUD_SDK_VERSION=204
-            export GCLOUD_PROJECT=gcp-project-id
             curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-$GCLOUD_SDK_VERSION.0.0-linux-x86_64.tar.gz -o ./gcloud-sdk.tar.gz
             tar xzf gcloud-sdk.tar.gz -C ~
             rm gcloud-sdk.tar.gz
@@ -67,6 +66,43 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "getting-started-java/helloworld-springboot/pom.xml" }}
       - run: cd getting-started-java/helloworld-springboot && mvn appengine:deploy
+  deploy_java_spring_standard:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --remote
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "getting-started-java/appengine-standard-java8/springboot-appengine-standard/pom.xml" }}
+            - v1-dependencies-
+      - run:
+          name: Store Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            export GCLOUD_SDK_VERSION=204
+            curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-$GCLOUD_SDK_VERSION.0.0-linux-x86_64.tar.gz -o ./gcloud-sdk.tar.gz
+            tar xzf gcloud-sdk.tar.gz -C ~
+            rm gcloud-sdk.tar.gz
+            export PATH=~/google-cloud-sdk/bin:$PATH
+            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+            gcloud config set project $GOOGLE_PROJECT_ID
+            echo 'export PATH=~/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
+            source $BASH_ENV
+            gcloud components install app-engine-java
+      - run: cd getting-started-java/appengine-standard-java8/springboot-appengine-standard && mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "getting-started-java/appengine-standard-java8/springboot-appengine-standard/pom.xml" }}
+      - run: cd getting-started-java/appengine-standard-java8/springboot-appengine-standard && mvn appengine:deploy
   deploy_wordpress_flexible:
     docker:
       - image: google/cloud-sdk
@@ -112,6 +148,13 @@ workflows:
           requires:
             - plan_terraform
       - deploy_java_spring_flexible:
+          requires:
+            - hold_java_spring_flexible
+      - hold_java_spring_standard:
+          type: approval
+          requires:
+            - plan_terraform
+      - deploy_java_spring_standard:
           requires:
             - hold_java_spring_flexible
       - hold_wordpress_flexible:
