@@ -7,4 +7,9 @@ resource "google_kms_key_ring" "gcp_pilot_key_ring" {
 resource "google_kms_crypto_key" "gcp_pilot_crypto_key" {
   name     = "gcp_pilot_crypto_key"
   key_ring = "${google_kms_key_ring.gcp_pilot_key_ring.id}"
+  rotation_period = "100000s"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
