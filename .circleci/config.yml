@@ -152,7 +152,8 @@ workflows:
   terraform:
     jobs:
       - enable_apis
-      - plan_terraform
+      - plan_terraform:
+          requires: enable_apis
       - hold_terraform:
           type: approval
           requires:
