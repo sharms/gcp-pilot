@@ -16,6 +16,9 @@ jobs:
       - run:
           name: Enabling APIs
           command: ./terraform/enable-apis.sh
+      - run:
+          name: Enable Audit Logging
+          command: ./terraform/enable-audit-logs.sh
   plan_terraform:
     docker:
       - image: hashicorp/terraform:0.11.8
