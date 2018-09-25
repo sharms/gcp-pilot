@@ -6,6 +6,21 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup Google Cloud SDK
+          command: |
+            export GCLOUD_SDK_VERSION=204
+            curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-$GCLOUD_SDK_VERSION.0.0-linux-x86_64.tar.gz -o ./gcloud-sdk.tar.gz
+            tar xzf gcloud-sdk.tar.gz -C ~
+            rm gcloud-sdk.tar.gz
+            export PATH=~/google-cloud-sdk/bin:$PATH
+            gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+            gcloud config set project $GOOGLE_PROJECT_ID
+            echo 'export PATH=~/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Enabling APIs
+          command: ./terraform/enable-apis.sh
+      - run:
           name: Store Service Account
           command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
       - run:
