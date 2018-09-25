@@ -8,6 +8,7 @@ cloudapis.googleapis.com
 cloudbuild.googleapis.com
 clouddebugger.googleapis.com
 cloudkms.googleapis.com
+cloudresourcemanager.googleapis.com
 cloudtrace.googleapis.com
 compute.googleapis.com
 container.googleapis.com
