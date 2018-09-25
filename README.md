@@ -31,3 +31,6 @@ Bootstrap Process
 1. Create a Terraform service account via
    `Console -> IAM & admin -> Service Accounts`
 1. Save the JSON credentials to `$HOME/gcloud-service-key.json`
+1. Enabled Audit Logging via
+   `Console -> IAM & admin -> Audit Logs`
+   Waiting on Terraform to merge [this feature](https://github.com/terraform-providers/terraform-provider-google/issues/936)
